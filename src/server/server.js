@@ -2,27 +2,13 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 const port = process.env.PORT || 8080;
-
-const io = require("socket.io")(server, {
-   cors: {
-     origin: "http://localhost:3000",
-     methods: ["GET", "POST"]
-   }
- });
-
 
 app.use(express.static(path.join(__dirname, '../../build')));
 
-app.get('/', (req, res) => { 
-   res.status(200).send('Server listening')
-});
+app.get('/', (req, res) => res.sendFile(__dirname + './index.html'));
 
-//app.get('/', (req, res) => res.sendFile(__dirname + '../../public/index.html'));
-
-server.listen(port, () => {
-   console.log('Listening on port '+port);
-});
 
 function getRandomGameCode() {
    const code = Math.random().toString(36).slice(2);
@@ -133,6 +119,11 @@ io.on('connection', (socket) => {
       console.log(`${player} disconnected`);
 
    });
+});
+
+
+server.listen(port, () => {
+   console.log(`server listening on port ${port}`);
 });
 
 

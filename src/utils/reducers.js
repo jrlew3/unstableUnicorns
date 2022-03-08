@@ -1,14 +1,14 @@
 import { createStore, combineReducers } from "redux";
-import socketClient from 'socket.io-client';
+import io from 'socket.io-client';
 import { loadCards } from './util.js';
 
-const port = "http://localhost:8080";
-const socketio = socketClient(port);
+const socketio = io("/")
 function socket(state = socketio, action) {
     switch(action.type) {
         default: return state; 
     }
 }
+
 
 function startGame(state, players) {
     const filtered = players.filter(player => player != state.player);

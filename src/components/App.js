@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Login, Join, Create, Wait } from './Lobby.js';
+import { Login } from './Login.js';
 import Game from './Game';
 import { loadSocket } from '../utils/actions';
 
