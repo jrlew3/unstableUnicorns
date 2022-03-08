@@ -2,8 +2,7 @@ import { createStore, combineReducers } from "redux";
 import io from 'socket.io-client';
 import { loadCards } from './util.js';
 
-const socketio = io("/")
-function socket(state = socketio, action) {
+function socket(state = io("/"), action) {
     switch(action.type) {
         default: return state; 
     }
@@ -12,10 +11,10 @@ function socket(state = socketio, action) {
 
 function startGame(state, players) {
     const filtered = players.filter(player => player != state.player);
-    
     return {
         ...state, 
         players: filtered,
+        preview: (filtered.length == 0) ? "discard" : `${filtered[0]}-stable`
     }
 }
 
@@ -144,7 +143,7 @@ function decks(state={}, action) {
         case 'END_TURN': 
             return endTurn(state); 
 
-        case 'REMOVE_PLAYER': 
+        case 'REMOVE_PLAYER_CARDS': 
             return removePlayerCards(state, action.player);
 
         default: 

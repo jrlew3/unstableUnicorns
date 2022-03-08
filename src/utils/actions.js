@@ -34,6 +34,11 @@ export const removePlayer = (dispatch, player) => {
         type: "REMOVE_PLAYER",
         player: player, 
     })
+
+    dispatch({
+        type: "REMOVE_PLAYER_CARDS",
+        player: player, 
+    })
 }
 
 
