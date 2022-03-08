@@ -116,8 +116,10 @@ function endTurn(state) {
 function removePlayerCards(state, player) {
     const stable = `${player}-stable`;
     const hand = `${player}-hand`;
+
+    if(!(hand in state)) return state; 
+
     const cards = discardCards(state[hand].concat(state[stable])); 
-    
     return {
         ...state, 
         discard: [...cards.discard, ...state.discard], 
