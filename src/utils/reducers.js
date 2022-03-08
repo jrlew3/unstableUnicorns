@@ -16,7 +16,6 @@ function startGame(state, players) {
     return {
         ...state, 
         players: filtered,
-        preview: filtered.length == 0 ? "discard" : `${filtered[0]}-stable`
     }
 }
 
@@ -50,6 +49,12 @@ function game(state=defaultGame, action) {
                 players: [...state.players, action.player]
             }
         
+        case 'REMOVE_PLAYER': 
+            return {
+                ...state, 
+                players: state.players.filter(player => player != action.player),
+                preview: (state.preview == action.player) ? "discard" : state.preview
+            }
         case 'SET_PREVIEW':
             return {
                 ...state, 
@@ -73,27 +78,53 @@ function game(state=defaultGame, action) {
 }
 
 function removeCard(state, deck, card) {
-    const newDeck = state[deck].filter(tmp => card != tmp); 
-    return Object.assign({}, state, {[deck]: newDeck}); 
+    return {
+        ...state, 
+        [deck]: state[deck].filter(tmp => card != tmp)
+    }
 }
   
 function addCard(state, deck, card, index) {
     const newDeck = [...state[deck].slice(0, index), card, ...state[deck].slice(index)];
-    return Object.assign({}, state, {[deck]: newDeck}); 
+    return {
+        ...state, 
+        [deck]: newDeck
+    }
+}
+
+
+function discardCards(cards) {
+    return {
+        discard: cards.filter(card => !card.includes("Baby Unicorn")), 
+        nursery: cards.filter(card => card.includes("Baby Unicorn")), 
+    }
 }
 
 function endTurn(state) {
-    const nurseryCards = state.turn.filter(card => card.includes("Baby Unicorn"));
-    const discardCards = state.turn.filter(card => !card.includes("Baby Unicorn"));
+    const cards = discardCards(state.turn); 
 
     const result = {
         ...state, 
         turn: [], 
-        discard: [...discardCards, ...state.discard],
-        nursery: [...nurseryCards, ...state.nursery]
+        discard: [...cards.discard, ...state.discard],
+        nursery: [...cards.nursery, ...state.nursery]
     }
 
     return result; 
+}
+
+function removePlayerCards(state, player) {
+    const stable = `${player}-stable`;
+    const hand = `${player}-hand`;
+    const cards = discardCards(state[hand].concat(state[stable])); 
+    
+    return {
+        ...state, 
+        discard: [...cards.discard, ...state.discard], 
+        nursery: [...cards.nursery, ...state.nursery], 
+        [stable]: [],
+        [hand]: [],
+    }
 }
 
 
@@ -110,6 +141,9 @@ function decks(state={}, action) {
         
         case 'END_TURN': 
             return endTurn(state); 
+
+        case 'REMOVE_PLAYER': 
+            return removePlayerCards(state, action.player);
 
         default: 
             return state; 
