@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { editions } from '../utils/util';
-import { join } from '../utils/actions';
+import { editions, loadDecks } from '../utils/util';
+import { closeModal, setModal } from '../utils/actions';
 
 const Create = ({close}) => {
     const socket = useSelector(state => state.socket);
@@ -18,7 +18,6 @@ const Create = ({close}) => {
     
     const createGame = () =>  {
         const checkedEditions = editions.filter((edition, index) => checked[index]); 
-        console.log(checkedEditions);
         if(checkedEditions.length == 0) {
             alert("You must select at least one edition"); 
         } else {
@@ -88,15 +87,16 @@ const Join = ({close}) => {
 }
 
 
-const Wait = ({close}) => {
+const Room = ({close}) => {
     const socket = useSelector(state => state.socket);
     const gid = useSelector(state => state.game.gid);
     const players = useSelector(state => state.game.players);
-    const player = useSelector(state => state.game.player);
+    const editions = useSelector(state => state.game.editions);
 
     const startGame = () => {
+        const decks = loadDecks(players, editions); 
+        socket.emit("startGame", {players:players, decks:decks});
         close();
-        socket.emit("startGame", {players: players});
     }
 
     const leaveRoom = () => {
@@ -111,7 +111,6 @@ const Wait = ({close}) => {
             <p id="code">Game Code: {gid}</p>
             <hr/> 
             <ul id="players">
-                <li key={player}>{player}</li>
                 {players.map((name) => (
                     <li key={name}>{name}</li>
                 ))}
@@ -121,22 +120,28 @@ const Wait = ({close}) => {
     )
 }
 
-const Login = () => {
-    const socket = useSelector(state => state.socket);
-    const [modal, setModal] = useState(""); 
-    const dispatch = useDispatch(); 
 
-    const closeModal = () =>  {
-        setModal(""); 
+const LoginModal = () => {
+    const modal = useSelector(state => state.game.modal);
+    const dispatch = useDispatch();
+
+    const close = () => {
+        closeModal(dispatch); 
     }
 
-    useEffect(() => {
-        socket.on("join", (data) => {
-            join(dispatch, data); 
-            socket.removeListener("join"); 
-            setModal("wait"); 
-        })
-    }, []);
+    return (
+        <React.Fragment>
+            <div className="backdrop"></div>
+            {(modal == "join") && <Join close={close}/>}
+            {(modal == "create") && <Create close={close}/>} 
+            {(modal == "room") && <Room close={close}/>}
+        </React.Fragment>
+    );
+}
+
+const Login = () => {
+    const dispatch = useDispatch();
+    const showModal = useSelector(state => state.game.showModal);
 
     return (
         <div id="lobby">
@@ -148,16 +153,14 @@ const Login = () => {
                     <p id="description">Build a unicorn army. Betray your friends. Unicorns are your friends now.</p>
 
                     <div className="row">
-                        <div className="button" onClick={() => setModal("create")}>New Game</div>
-                        <div className="button" onClick={() => setModal("join")}>Join Game</div>
+                        <div className="button" onClick={() => setModal(dispatch, "create")}>New Game</div>
+                        <div className="button" onClick={() => setModal(dispatch, "join")}>Join Game</div>
                     </div>
                 </div>
             </div>
-
-            {(modal != "") && <div className="backdrop"></div>}
-            {(modal == "join") && <Join close={closeModal}/>}
-            {(modal == "create") && <Create close={closeModal}/>} 
-            {(modal == "wait") && <Wait close={closeModal}/>}
+            
+            {showModal && <LoginModal/>}
+          
         </div>
     )
 }

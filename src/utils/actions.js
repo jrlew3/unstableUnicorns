@@ -1,53 +1,30 @@
-// helper functions for reducer actions
-import { loadDecks } from '../utils/util'
- 
+// helper functions for reducer actions 
 export const join = (dispatch, data) => {
-    const defaultDeck = loadDecks(data.editions); 
-
     dispatch({
-        type: "START_GAME",
+        type: "JOIN_GAME",
         gid: data.gid, 
         player: data.player, 
         players: data.players, 
+        editions: data.editions, 
     })
-
-    dispatch({
-        type: "SET_CARDS",
-        cards: defaultDeck.cards, 
-    })
-
-    dispatch({
-        type: "SET_PUBLIC_DECKS", 
-        decks: defaultDeck.decks, 
-    })
-
-    dispatch({
-        type: "ADD_PLAYER_DECKS",
-        player: data.player, 
-    })
-
-    for(const player of data.players) {
-        dispatch({
-            type: "ADD_PLAYER_DECKS",
-            player: player, 
-        })
-    }
-
     console.log("joined");
 }
 
 export const startGame = (dispatch, data) => {
-  
+    dispatch({
+        type: "START_GAME",
+        players: data.players
+    })
+
+    dispatch({
+        type: "SET_DECKS",
+        decks: data.decks, 
+    })
 }
 
 export const addPlayer = (dispatch, player) => {
     dispatch({
         type: "ADD_PLAYER",
-        player: player, 
-    })
-
-    dispatch({
-        type: "ADD_PLAYER_DECKS",
         player: player, 
     })
 }
@@ -67,12 +44,13 @@ export const setPreview = (dispatch, preview) => {
     })
 }
 
-export const showModal = (dispatch, deck) => {
+export const setModal = (dispatch, modal) => {
     dispatch({
         type: "SHOW_MODAL",
-        deck, 
+        modal, 
     })
 }
+
 
 export const closeModal = (dispatch) => {
     dispatch({
@@ -119,14 +97,20 @@ export function loadSocket(dispatch, socket, navigate) {
     })
 
     socket.on("moveCard", (card, src, dest) => {
-        console.log(`received move card from ${src} to ${dest}`);
         moveCard(dispatch, card, src, dest, 0);
     })
     
     socket.on("startGame", (data) => {
+        startGame(dispatch, data);
+        closeModal(dispatch);
         navigate('/game');
         socket.removeListener("startGame"); 
         socket.removeListener("addPlayer"); 
+    })
+
+    socket.on("join", (data) => {
+        join(dispatch, data); 
+        setModal(dispatch, "room");
     })
     
 }

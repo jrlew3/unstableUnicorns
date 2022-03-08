@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Cards, Card } from './Game';
-import { showModal, setPreview } from '../utils/actions.js';
+import { setModal, setPreview } from '../utils/actions.js';
 import { getLabel, getUnicorns } from '../utils/util.js';
  
 
@@ -14,11 +14,12 @@ const Preview = () => {
 
     useEffect(() => {
         setHidden(isHand);
+        setIcon(isHand ? "visibility_off" : "visibility");
     }, [preview]);
 
     const toggleHidden = () => {
+        setIcon(hidden ? "visibility" : "visibility_off");
         setHidden(!hidden);
-        hidden ? setIcon("visibility_off") : setIcon("visibility");
     }
     
     return (
@@ -77,7 +78,7 @@ const Pile = (props) => {
        <div className="pile">
            {card ? <Card card={card} {...props}/> : <div className="card"></div>}
             
-            <div className="label"  onClick={() => showModal(dispatch, props.deck)}>
+            <div className="label"  onClick={() => setModal(dispatch, props.deck)}>
                 <label>{getLabel(props.deck)}</label>
             </div>     
        </div>

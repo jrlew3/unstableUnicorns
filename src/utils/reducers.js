@@ -1,6 +1,6 @@
 import { createStore, combineReducers } from "redux";
 import socketClient from 'socket.io-client';
-import { loadDecks } from './util.js';
+import { loadCards } from './util.js';
 
 const port = "http://localhost:8080";
 const socketio = socketClient(port);
@@ -10,25 +10,40 @@ function socket(state = socketio, action) {
     }
 }
 
+function startGame(state, players) {
+    const filtered = players.filter(player => player != state.player);
+    
+    return {
+        ...state, 
+        players: filtered,
+        preview: filtered.length == 0 ? "discard" : `${filtered[0]}-stable`
+    }
+}
+
+
 const defaultGame = {
-    player: "player", 
-    players: ["player1", "player2", "player3"], 
+    player: "", 
+    players: [], 
     gid: "",
-    preview: "player1-hand",
+    preview: "",
     showModal: false, 
     modal: "", 
 }
 
 function game(state=defaultGame, action) {
     switch(action.type) {
-        case 'START_GAME':
+        case 'JOIN_GAME':
             return {
                 ...state,
                 gid: action.gid, 
                 player: action.player, 
                 players: action.players, 
+                editions: action.editions,
             } 
         
+        case 'START_GAME': 
+            return startGame(state, action.players);
+
         case 'ADD_PLAYER': 
             return {
                 ...state, 
@@ -44,7 +59,7 @@ function game(state=defaultGame, action) {
             return {
                 ...state, 
                 showModal: true, 
-                modal: action.deck, 
+                modal: action.modal, 
             }
         case 'CLOSE_MODAL':
             return {
@@ -57,23 +72,14 @@ function game(state=defaultGame, action) {
     }
 }
 
-const defaultDecks = loadDecks(["Base"]).decks; 
-
 function removeCard(state, deck, card) {
     const newDeck = state[deck].filter(tmp => card != tmp); 
     return Object.assign({}, state, {[deck]: newDeck}); 
 }
   
-
 function addCard(state, deck, card, index) {
     const newDeck = [...state[deck].slice(0, index), card, ...state[deck].slice(index)];
     return Object.assign({}, state, {[deck]: newDeck}); 
-}
-
-function addPlayerDecks(state, player) { 
-    return Object.assign({}, state, 
-        {[player+"-hand"]: []},
-        {[player+"-stable"]: []});  
 }
 
 function endTurn(state) {
@@ -91,13 +97,10 @@ function endTurn(state) {
 }
 
 
-function decks(state=defaultDecks, action) {
+function decks(state={}, action) {
     switch(action.type) {
-        case 'SET_PUBLIC_DECKS': 
+        case 'SET_DECKS': 
             return Object.assign({}, state, action.decks);
-        
-        case 'ADD_PLAYER_DECKS':      
-            return addPlayerDecks(state, action.player);
         
         case 'REMOVE_CARD':
             return removeCard(state, action.deck, action.card); 
@@ -113,7 +116,7 @@ function decks(state=defaultDecks, action) {
     }
 }
 
-const defaultCards = loadDecks(["Base"]).cards; 
+const defaultCards = loadCards();
 function cards(state=defaultCards, action) {
     switch(action.type) {
         case 'SET_CARDS':

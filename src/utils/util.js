@@ -25,32 +25,30 @@ export function getUnicorns(cards) {
     }, 0);
 }
 
-export function loadDecks(editions) { 
+export function loadCards() {
     var cards = {}; 
+    
+    const ruleCard = defaultDeck[0]; 
+    cards[ruleCard.name] = new CardData(ruleCard); 
+
+    for(const card of defaultDeck) {
+        cards[card.name] = new CardData(card); 
+    }
+
+    return cards; 
+}
+
+export function loadDecks(players, editions) { 
     var decks = {
         nursery: [],
         deck: [],
         discard: [],
         turn: [],
-        rules: [],
-        "player-hand": ["Narwhal#0", ],
-        "player-stable": ["Rhinocorn#0"],
-        "player1-hand": ["Rhinocorn#1", "Rhinocorn#2"],
-        "player1-stable": ["Rhinocorn#3"],
-        "player2-hand": [],
-        "player2-stable": ["Rhinocorn#4", "Rhinocorn#5"],
-        "player3-hand": ["Rhinocorn#6"], 
-        "player3-stable": [],
+        rules: defaultDeck[0],
     }
-
-    const ruleCard = defaultDeck[0]; 
-    cards[ruleCard.name] = new CardData(ruleCard); 
-    decks.rules = [ruleCard.name]; 
 
     for(const card of defaultDeck) {
         if (card.decks.some(edition => editions.includes(edition))) {
-            cards[card.name] = new CardData(card); 
-
             if (card.type == "Baby Unicorn") {
                 decks.nursery.push(card.name+"#1");
             } else {
@@ -62,7 +60,13 @@ export function loadDecks(editions) {
     }
 
     decks.deck = shuffle(decks.deck);
-    return {decks: decks, cards: cards};
+
+    for(const player of players) {
+        decks[player+"-hand"] = decks.deck.splice(0, 5); 
+        decks[player+"-stable"] = [decks.nursery.shift()];
+    }
+
+    return decks;
 }
 
 

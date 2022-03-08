@@ -42,10 +42,9 @@ function validUsername(name) {
 const games = {}; 
 
 io.on('connection', (socket) => {
-   socket.join("default");
    console.log("player connected");
-   var player = "player";
-   var gameID = "default"; 
+   var player = "";
+   var gameID = ""; 
 
    socket.on("joinGame", (data) => { 
       gameID = data.gameID; 
@@ -56,13 +55,13 @@ io.on('connection', (socket) => {
             socket.emit("error", "Username already taken");
          } else if(validUsername(player)) {
             socket.join(gameID);
+            games[gameID].players.push(player); 
             socket.emit("join", {
                player: player, 
                gid: gameID, 
                players: games[gameID].players, 
                editions: games[gameID].editions,
             });
-            games[gameID].players.push(player); 
             socket.to(gameID).emit("addPlayer", player); 
             console.log(`${player} joined game ${gameID}`);
          } else {
@@ -87,7 +86,7 @@ io.on('connection', (socket) => {
          socket.emit("join", {
             player: player, 
             gid: gameID, 
-            players: [],
+            players: games[gameID].players,
             editions: games[gameID].editions, 
          });
          console.log(`${player} created game ${gameID} with ${data.editions}`);
@@ -116,9 +115,10 @@ io.on('connection', (socket) => {
 
    socket.on("leaveRoom", () => {
       socket.leave(gameID); 
-      if(games[gameID].players && games[gameID].players.length == 0) {
+      if(gameID in games && games[gameID].players.length == 0) {
          delete games[gameID]; 
-      } 
+      }
+
       console.log(`${player} left room`);
    })
 
