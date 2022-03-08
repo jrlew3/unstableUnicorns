@@ -1,0 +1,254 @@
+@mixin cards($vertical: false) {
+    $width: 150px; $height: 200px; 
+ 
+    .cards {
+        @if $vertical {
+            @include maxHeight; 
+            width: $width; 
+            flex-direction: column; 
+            overflow-y: scroll; 
+            overflow-x: hidden;
+        } @else {
+            height: $height; 
+        }
+    }
+
+    .card {
+        width: $width; 
+        height: $height;
+
+        img {
+            width: $width; 
+            height: $height; 
+        }
+    }
+}
+
+
+.cards {
+    $width: 130px; $height: 180px; 
+    @include flex($gap: 10px); 
+    @include maxWidth; 
+    position: relative; 
+    overflow-x: scroll; 
+    overflow-y: hidden;
+    height: $height; 
+}
+
+.card {
+    @include squish; 
+    $width: 130px; $height: 180px; 
+    width: $width; height: $height; 
+    position: relative; 
+
+    span { 
+        @include overlay($top: 5px, $right: 7px);
+        @include hover($color: $dark);
+        background: white; 
+        color: #333; 
+        padding: 1px 1px; 
+        border-radius: 50%; 
+        font-size: 18px; 
+    }
+
+    img { 
+        @include squish; 
+        width: $width; height: $height; 
+        border: none; 
+        outline: none; 
+        border-radius: 5px; 
+        overflow: hidden; 
+    }
+}
+
+
+#game {
+    @include flex($align: stretch); 
+    @include squish; 
+    @include grow("#table");
+    @include maxWidth; 
+    @include maxHeight; 
+
+    color: #333; 
+    background: linear-gradient(45deg, $light, $dark);
+
+    h2 {
+        font-weight: bold; 
+        font-size: 15px; 
+    }
+
+    h3 {
+        font-weight: bold; 
+        opacity: 100%; 
+    }
+}
+
+#table { 
+    @include flex($direction: column, $gap: 7px); 
+    overflow-y: scroll; 
+    width: 250px;
+    padding: 10px 15px; 
+
+    .deck {
+        @include container; 
+        @include maxWidth; 
+        @include cards;
+    
+        .header {
+            @include flex($justify: flex-start, $gap: 5px);
+            @include squish; 
+        }
+
+        p {
+            font-size: 12px; 
+        }
+    }
+}
+
+#sidebar  {
+    @include flex($direction: column, $gap: 20px);
+    @include grow("#turn"); 
+    height: auto; 
+    padding: 20px 15px 20px 15px; 
+    overflow: hidden;
+    width: 160px; 
+    background: rgba(255, 255, 255, 0.8); 
+
+    #turn {
+        @include cards($vertical: true); 
+        @include maxWidth; 
+        height: 50px; 
+        .cards {
+            margin-top: 5px;
+        }
+    } 
+
+    #rules {
+        @include maxWidth; 
+        @include cards; 
+        height: auto; 
+    }
+}
+
+
+#modal {
+    @include center($top: 40%, $index: 10);
+    @include cards; 
+    width: 90%; 
+    padding: 10px 15px 20px 15px; 
+    
+    margin: 0;
+    background: rgba(255, 255, 255, 0.9); 
+
+    .header {
+        justify-content: space-between;
+        margin-bottom: 10px;
+
+        span {
+            font-size: 20px;  
+        }
+
+        .row {
+            gap: 5px;
+        }
+
+    }  
+}
+
+
+#table > .row { 
+    @include maxWidth; 
+    @include grow("#preview");
+    @include flex($gap: 7px, $align: stretch);
+
+    #piles {
+        @include flex($gap: 10px); 
+        @include container; 
+        overflow-x: scroll;
+    
+        .pile  { 
+            @include flex($direction: column, $gap: 5px);
+            font-size: 13px; 
+            font-weight: 500;
+
+            .card {
+                background: rgba(255, 255, 255, 0.3);
+            }
+
+            label {
+                @include hover($color: $dark);
+            }
+
+            .draw {
+                @include center; 
+                @include hover($dark);
+                font-size: 35px; 
+                color: $light;  
+            }
+        }
+    }
+
+    #preview {
+        @include container; 
+        width: 100px; 
+        
+        .header {
+            span {
+                font-size: 20px; 
+                margin-top: -5px;
+            }
+    
+            h2 {
+                margin-bottom: 5px;
+            }
+        }
+    
+        .row span {
+            font-size: 19px; 
+            margin-top: -7px; 
+        }
+    }
+
+    #options {
+        position: relative; 
+        
+        ul {
+            @include list; 
+            position: absolute; 
+            z-index: 2; 
+            display: none; 
+            width: 125px; 
+            padding: 0; margin: 0; 
+            max-height: 150px; 
+            box-shadow: rgba(149, 157, 165, 0.5) 0px 5px 5px;
+        }
+
+        .row {
+            gap: 2px; 
+        }
+
+        li {
+            @include hover($background: #f3f3f3); 
+            @include flex($gap: 10px); 
+            @include maxWidth; 
+            padding: 3px 10px;
+            font-size: 11px;    
+            background: white;
+        }
+        
+        .expand {
+            transition: 0.5s; 
+        }
+
+        &:hover {
+            ul { 
+                display: block; 
+            }
+
+            .expand { 
+                transform: rotate(-180deg)
+            }
+        }
+    }
+
+}

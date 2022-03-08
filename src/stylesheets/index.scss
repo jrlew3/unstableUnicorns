@@ -1,0 +1,125 @@
+$dark: #9B59CA;
+$light: #D98AD6;
+$background: rgba(255, 255, 255, 0.6); 
+
+@mixin flex($direction: row, $gap: 0px, $justify: flex-start, $align: center) {
+    display: flex; 
+    flex-direction: $direction;
+    gap: $gap; 
+    justify-content: $justify; 
+    align-items: $align; 
+}
+
+@mixin hover($color: $light, $background: inherit) {
+    &:hover {
+        color: $color; 
+        cursor: pointer; 
+
+        @if($background != inherit) {
+            background: $background; 
+        }
+    }
+}
+
+@mixin squish($vertical: hidden, $horizontal: hidden) {
+    margin: 0;
+    padding: 0; 
+    overflow-x: $horizontal; 
+    overflow-y: $vertical;
+}
+
+@mixin overlay($top:0px, $right: 0px, $left: -1px, $index: 1) {
+    position: absolute;
+    top: $top; 
+
+    @if($left < 0) {
+        right: $right; 
+    } @else {
+        left: $left; 
+    }
+    z-index: $index; 
+}
+
+@mixin center($top: 50%, $right: 50%, $index: 1) {
+    position: absolute; 
+    top: $top;
+    right: $right;
+    transform: translate(50%, -50%);
+    z-index: $index; 
+
+}
+
+@mixin list($scroll: false) {
+    list-style: none; 
+    overflow-x: hidden; 
+    overflow-y: auto;  
+    
+    li {
+        white-space: nowrap; 
+    }
+
+    @if not($scroll) {
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}
+
+@mixin grow($component) {
+    > :not(#{$component}) {
+        flex: 0 0 auto;
+    }
+    
+    #{$component} {
+        flex-grow: 1; 
+    }
+}
+
+@mixin maxWidth {
+    width: 100%; 
+    box-sizing: border-box; 
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+@mixin maxHeight {
+    height: 100%; 
+    box-sizing: border-box; 
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+@mixin container {
+    background: $background; 
+    padding: 10px 20px; 
+    border-radius: 10px; 
+}
+
+
+body {
+    background: black; 
+    font-family: 'Poppins';
+    overflow-y: auto!important; 
+    height: 100%; 
+    width: 100%; 
+}
+
+body, #root, p, h1, h2, h3, h4 {
+    @include squish;
+}
+
+.material-icons { 
+    transition: color 0.3s ease-in-out; 
+    @include hover; 
+}
+
+.row {
+    @include flex;
+}
+
+.header { 
+    @include flex($justify: space-between);   
+    white-space: nowrap; 
+}
+
+@import 'Game', 'Lobby'; 

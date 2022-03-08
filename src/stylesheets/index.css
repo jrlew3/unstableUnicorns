@@ -1,0 +1,598 @@
+body {
+  background: black;
+  font-family: "Poppins";
+  overflow-y: auto !important;
+  height: 100%;
+  width: 100%;
+}
+
+body, #root, p, h1, h2, h3, h4 {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.material-icons {
+  transition: color 0.3s ease-in-out;
+}
+.material-icons:hover {
+  color: #D98AD6;
+  cursor: pointer;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.cards {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  position: relative;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  height: 180px;
+}
+
+.card {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 130px;
+  height: 180px;
+  position: relative;
+}
+.card span {
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  z-index: 1;
+  background: white;
+  color: #333;
+  padding: 1px 1px;
+  border-radius: 50%;
+  font-size: 18px;
+}
+.card span:hover {
+  color: #9B59CA;
+  cursor: pointer;
+}
+.card img {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 130px;
+  height: 180px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#game {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  justify-content: flex-start;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  color: #333;
+  background: linear-gradient(45deg, #D98AD6, #9B59CA);
+}
+#game > :not(#table) {
+  flex: 0 0 auto;
+}
+#game #table {
+  flex-grow: 1;
+}
+#game h2 {
+  font-weight: bold;
+  font-size: 15px;
+}
+#game h3 {
+  font-weight: bold;
+  opacity: 100%;
+}
+
+#table {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: scroll;
+  width: 250px;
+  padding: 10px 15px;
+}
+#table .deck {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 10px 20px;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+#table .deck .cards {
+  height: 200px;
+}
+#table .deck .card {
+  width: 150px;
+  height: 200px;
+}
+#table .deck .card img {
+  width: 150px;
+  height: 200px;
+}
+#table .deck .header {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+#table .deck p {
+  font-size: 12px;
+}
+
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: center;
+  height: auto;
+  padding: 20px 15px 20px 15px;
+  overflow: hidden;
+  width: 160px;
+  background: rgba(255, 255, 255, 0.8);
+}
+#sidebar > :not(#turn) {
+  flex: 0 0 auto;
+}
+#sidebar #turn {
+  flex-grow: 1;
+}
+#sidebar #turn {
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 50px;
+}
+#sidebar #turn .cards {
+  height: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  width: 150px;
+  flex-direction: column;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#sidebar #turn .card {
+  width: 150px;
+  height: 200px;
+}
+#sidebar #turn .card img {
+  width: 150px;
+  height: 200px;
+}
+#sidebar #turn .cards {
+  margin-top: 5px;
+}
+#sidebar #rules {
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: auto;
+}
+#sidebar #rules .cards {
+  height: 200px;
+}
+#sidebar #rules .card {
+  width: 150px;
+  height: 200px;
+}
+#sidebar #rules .card img {
+  width: 150px;
+  height: 200px;
+}
+
+#modal {
+  position: absolute;
+  top: 40%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  z-index: 10;
+  width: 90%;
+  padding: 10px 15px 20px 15px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.9);
+}
+#modal .cards {
+  height: 200px;
+}
+#modal .card {
+  width: 150px;
+  height: 200px;
+}
+#modal .card img {
+  width: 150px;
+  height: 200px;
+}
+#modal .header {
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+#modal .header span {
+  font-size: 20px;
+}
+#modal .header .row {
+  gap: 5px;
+}
+
+#table > .row {
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+#table > .row > :not(#preview) {
+  flex: 0 0 auto;
+}
+#table > .row #preview {
+  flex-grow: 1;
+}
+#table > .row #piles {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 10px 20px;
+  border-radius: 10px;
+  overflow-x: scroll;
+}
+#table > .row #piles .pile {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+}
+#table > .row #piles .pile .card {
+  background: rgba(255, 255, 255, 0.3);
+}
+#table > .row #piles .pile label:hover {
+  color: #9B59CA;
+  cursor: pointer;
+}
+#table > .row #piles .pile .draw {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  z-index: 1;
+  font-size: 35px;
+  color: #D98AD6;
+}
+#table > .row #piles .pile .draw:hover {
+  color: #9B59CA;
+  cursor: pointer;
+}
+#table > .row #preview {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 10px 20px;
+  border-radius: 10px;
+  width: 100px;
+}
+#table > .row #preview .header span {
+  font-size: 20px;
+  margin-top: -5px;
+}
+#table > .row #preview .header h2 {
+  margin-bottom: 5px;
+}
+#table > .row #preview .row span {
+  font-size: 19px;
+  margin-top: -7px;
+}
+#table > .row #options {
+  position: relative;
+}
+#table > .row #options ul {
+  list-style: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  z-index: 2;
+  display: none;
+  width: 125px;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  box-shadow: rgba(149, 157, 165, 0.5) 0px 5px 5px;
+}
+#table > .row #options ul li {
+  white-space: nowrap;
+}
+#table > .row #options ul::-webkit-scrollbar {
+  display: none;
+}
+#table > .row #options .row {
+  gap: 2px;
+}
+#table > .row #options li {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding: 3px 10px;
+  font-size: 11px;
+  background: white;
+}
+#table > .row #options li:hover {
+  color: #D98AD6;
+  cursor: pointer;
+  background: #f3f3f3;
+}
+#table > .row #options .expand {
+  transition: 0.5s;
+}
+#table > .row #options:hover ul {
+  display: block;
+}
+#table > .row #options:hover .expand {
+  transform: rotate(-180deg);
+}
+
+#lobby {
+  color: white;
+}
+#lobby h1 {
+  font-size: 35px;
+  font-weight: bold;
+}
+#lobby h2 {
+  font-size: 20px;
+}
+#lobby h3 {
+  font-weight: normal;
+  opacity: 70%;
+  font-size: 17px;
+}
+#lobby p {
+  font-size: 12px;
+}
+#lobby hr {
+  width: 250px;
+  border-top: 1px solid white;
+  opacity: 20%;
+}
+#lobby .button {
+  border: none;
+  border-radius: 50px;
+  color: white;
+  padding: 8px 20px;
+  font-size: 13px;
+  transition: all 0.4s ease-in;
+  background: linear-gradient(to right, #D98AD6, #9B59CA);
+}
+#lobby .button:hover {
+  color: white;
+  cursor: pointer;
+  background: #D98AD6;
+}
+
+#login {
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  top: 40%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  z-index: 1;
+  width: 815px;
+}
+#login img {
+  width: 400px;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 200px 200px black;
+}
+#login h3 {
+  margin-top: -7px;
+  margin-bottom: 10px;
+}
+#login #description {
+  width: 300px;
+  font-size: 13px;
+}
+#login .row {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: center;
+}
+#login .button {
+  background: #9B59CA;
+  letter-spacing: 0.1px;
+}
+
+form {
+  position: absolute;
+  top: 40%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 20px;
+  padding: 30px 0 70px 0;
+  width: 300px;
+  text-align: center;
+  min-height: 200px;
+  background: rgba(30, 30, 30, 0.96);
+}
+form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+}
+form #back {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 1;
+  font-size: 10px;
+  color: #9B59CA;
+}
+form #back:hover {
+  color: #D98AD6;
+  cursor: pointer;
+}
+form #code {
+  margin-top: -25px;
+}
+form ul {
+  list-style: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 200px;
+}
+form ul li {
+  white-space: nowrap;
+}
+form ul::-webkit-scrollbar {
+  display: none;
+}
+form .submit {
+  position: absolute;
+  bottom: 30px;
+  margin-top: 10px;
+}
+
+input[type=text] {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 12px;
+  padding: 8px 0px;
+  color: white;
+  width: 200px;
+}
+input[type=text]:focus {
+  outline: none;
+  border-bottom: 1px solid #9B59CA;
+}
+input[type=text]:focus::-webkit-input-placeholder {
+  color: #9B59CA;
+}
+input[type=text]::-webkit-input-placeholder {
+  color: #aaa;
+}
+
+#editions {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-align: left;
+  font-size: 12px;
+  margin: 10px 0;
+  color: #aaa;
+}
+#editions label {
+  color: #ccc;
+  font-size: 14px;
+  width: 200px;
+}
+#editions input {
+  margin-right: 10px;
+}
+#editions ul {
+  list-style: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 130px;
+}
+#editions ul li {
+  white-space: nowrap;
+}
+
+.backdrop {
+  position: absolute;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+}
+
+/*# sourceMappingURL=index.css.map */
